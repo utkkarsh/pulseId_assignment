@@ -18,13 +18,13 @@ exports.get = async (req, res, next) => {
 
 // Create a new ruleset
 exports.create = async (req, res, next) => {
-  const { startDate, endDate, cashback, redemptionLimit } = req.body;
+  const { startDate, endDate, amount, redemptionLimit } = req.body;
   console.log(req.body);
   // Schema Validation of Parameters provided in problem statement
   const schema = Joi.object({
     startDate: Joi.date().raw(),
     endDate: Joi.date().raw(),
-    cashback: Joi.number().required(),
+    amount: Joi.number().required(),
     redemptionLimit: Joi.number(),
   });
 
@@ -33,7 +33,7 @@ exports.create = async (req, res, next) => {
     const result = await schema.validateAsync({
       startDate,
       endDate,
-      cashback,
+      amount,
       redemptionLimit,
     });
     // Check if rule already in database
@@ -46,7 +46,7 @@ exports.create = async (req, res, next) => {
     const rule = new Ruleset({
       startDate: result.startDate,
       endDate: result.endDate,
-      cashback: result.cashback,
+      amount: result.amount,
       redemptionLimit: result.redemptionLimit,
     });
     console.log(rule);

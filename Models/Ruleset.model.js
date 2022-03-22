@@ -9,12 +9,13 @@ const rulesetSchema = new Mongoose.Schema(
     endDate: {
       type: Date,
     },
-    cashback: {
+    amount: {
       type: Mongoose.Schema.Types.Decimal128,
     },
     redemptionLimit: {
       type: Number,
     },
+
     minTransactions: {
       type: Number,
     },
