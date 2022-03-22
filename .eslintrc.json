@@ -1,0 +1,36 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es2021": true,
+    "jest/globals": true
+  },
+  "extends": ["airbnb-base", "plugin:jest/recommended"],
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "rules": {
+    "linebreak-style": ["error", "windows"],
+    "quotes": ["error", "double", { "avoidEscape": true }],
+    "object-curly-newline": [
+      "error",
+      {
+        "ObjectExpression": "always",
+        "ObjectPattern": { "multiline": true },
+        "ImportDeclaration": "never",
+        "ExportDeclaration": { "multiline": true, "minProperties": 3 }
+      }
+    ],
+    "no-console": "off",
+    "brace-style": ["error", "stroustrup"],
+    "comma-dangle": ["error", "never"],
+    "no-unused-vars": ["error", { "argsIgnorePattern": "next" }],
+    "no-var": ["off"],
+    "one-var": ["off"],
+    "global-require": 0,
+    "jest/expect-expect": [
+      "error",
+      { "assertFunctionNames": ["expect", "supertest.**.expect"] }
+    ]
+  }
+}
