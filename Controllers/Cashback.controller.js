@@ -7,25 +7,34 @@ Joi.objectId = require("joi-objectid")(Joi);
 
 // This function is used to filter the ruleset based on the given rules.
 // This function is not exported and hence can't be used outside of this controller
-function filterTransaction(rule, item, redemptionData) {
+function filterTransaction(rule, item, redemptionData, numTransactions) {
   let result = false;
+  let redemptionCount = redemptionData.has(rule._id)
+    ? redemptionData.get(rule._id) + 1
+    : 1;
 
   // Rule 1 : Transaction should be between startDate and endDate (or currentDate)
   //          if endDate is missing consider currentDate as endDate
   result =
     item.date > rule?.startDate && item.date < (rule?.endDate ?? new Date());
 
-  if (result === false) return result;
-
   // Rule 2 : Cashback can not be applied more times than specified in redemptionLimit
   if (rule?.redemptionLimit != undefined) {
-    let redemptionCount = redemptionData.has(rule._id)
-      ? redemptionData.get(rule._id) + 1
-      : 1;
-
     // console.log(`Checking limit for ${item.id} ${redemptionCount}`);
     // console.log(`Lim ${rule._id} `, rule.redemptionLimit);
     result = result && redemptionCount <= rule.redemptionLimit;
+  }
+
+  // Rule 3 : Rule for budget and minimum transactions
+  if (
+    rule?.minTransactions != undefined &&
+    rule?.budget != undefined &&
+    item?.customerId != undefined
+  ) {
+    result =
+      result &&
+      numTransactions >= rule.minTransactions &&
+      redemptionCount * rule.amount <= rule?.budget;
   }
 
   // return the final result
@@ -47,10 +56,17 @@ exports.get = async (req, res, next) => {
     let redemptionData = new Map();
 
     // Iterate each transaction and calculate the cashback
-    transaction.forEach((item) => {
+    for await (const item of transaction) {
+      // get the count of documents for transactions having customerId
+      let numTransactions = item?.customerId
+        ? await Transaction.countDocuments({
+            customerId: item.customerId,
+          }).exec()
+        : 0;
+
       // Filter the valid transactions which are eligible for cashback
       const data = ruleset.filter((rule) =>
-        filterTransaction(rule, item, redemptionData)
+        filterTransaction(rule, item, redemptionData, numTransactions)
       );
 
       if (data.length > 0) {
@@ -71,8 +87,7 @@ exports.get = async (req, res, next) => {
         // console.log(redemptionData);
         cashbackResult.push(cashbackObject);
       }
-    });
-
+    }
     res.send(cashbackResult);
   } catch (error) {
     next(error);
