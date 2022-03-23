@@ -10,7 +10,7 @@ mongoose.connection.on("error", (err) => {
   console.info("err", err);
 });
 mongoose.connection.on("connected", (err, res) => {
-  console.info("mongoose is connected to db", err, res);
+  console.info("mongoose is connected to db");
 });
 mongoose.connection.on("disconnected", () => {
   console.info("mongoose is disconnected");

@@ -8,7 +8,7 @@ Joi.objectId = require("joi-objectid")(Joi);
 exports.get = async (req, res, next) => {
   try {
     const rules = await Ruleset.find();
-    console.log(rules[1].cashback);
+    // console.log(rules[1].cashback);
     if (!rules) throw createHttpError.NotFound("No Rules Found!");
     res.send(rules);
   } catch (error) {
@@ -63,7 +63,7 @@ exports.create = async (req, res, next) => {
       minTransactions: result.minTransactions,
       budget: result.budget,
     });
-    console.log(rule);
+    // console.log(rule);
 
     // Save rule in the database
     const savedRule = await rule.save();

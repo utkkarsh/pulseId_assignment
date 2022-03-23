@@ -8,7 +8,7 @@ Joi.objectId = require("joi-objectid")(Joi);
 exports.get = async (req, res, next) => {
   try {
     const transactions = await Transaction.find();
-    console.log(transactions);
+    // console.log(transactions);
     res.send(transactions);
   } catch (error) {
     next(error);
