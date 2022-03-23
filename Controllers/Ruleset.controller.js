@@ -26,7 +26,7 @@ exports.create = async (req, res, next) => {
     minTransactions,
     budget,
   } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
 
   // Schema Validation of Parameters provided in problem statement
   const schema = Joi.object({
