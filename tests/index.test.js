@@ -20,6 +20,78 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
+describe("Connectivity Test", () => {
+  it("POST /ruleset", async () => {
+    const data = {
+      startDate: "2018-04-10",
+      endDate: "2018-05-10",
+      amount: 2.0,
+    };
+
+    await supertest(app).post("/ruleset").send(data).expect(200);
+  });
+
+  it("POST /transaction", async () => {
+    const data = {
+      date: "2018-03-01",
+      id: 99,
+    };
+
+    await supertest(app).post("/transaction").send(data).expect(200);
+  });
+
+  it("POST /transaction - duplicate", async () => {
+    const data = {
+      date: "2018-03-01",
+      id: 99,
+    };
+
+    await supertest(app).post("/transaction").send(data).expect(409);
+  });
+
+  it("GET /ruleset", async () => {
+    await supertest(app)
+      .get("/ruleset")
+      .expect(200)
+      .then(async (response) => {
+        // Check the response
+        expect(response.body).toBeTruthy();
+      });
+  });
+
+  it("GET /transaction", async () => {
+    await supertest(app)
+      .get("/transaction")
+      .expect(200)
+      .then(async (response) => {
+        // Check the response
+        expect(response.body).toBeTruthy();
+      });
+  });
+
+  it("GET /cashback", async () => {
+    await supertest(app)
+      .get("/cashback")
+      .expect(200)
+      .then(async (response) => {
+        // Check the response
+        expect(response.body).toBeTruthy();
+      });
+  });
+
+  it("GET /abc - invalid Route", async () => {
+    await supertest(app).get("/abc").expect(404);
+  });
+
+  it("POST /transaction - invalid body", async () => {
+    const data = {
+      id: 98,
+    };
+
+    await supertest(app).post("/transaction").send(data).expect(422);
+  });
+});
+
 describe("Test Case 1", () => {
   it("POST /ruleset 1", async () => {
     const data = {
